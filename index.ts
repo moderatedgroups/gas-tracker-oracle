@@ -5,13 +5,18 @@ const accountSid = process.env.TWILIO_ACCOUNT_SID;
 const authToken = process.env.AUTH_TOKEN;
 const client = require('twilio')(accountSid, authToken);
 const apiKey = process.env.APIKEY
+const fromNumber = process.env.FROM_NUMBER
+const toNumber = process.env.TO_NUMBER
+
 if (!apiKey) {
   throw new Error('No APIKEY');
 }
 if (!accountSid || !authToken) {
     throw new Error('TWILIO_ACCOUNT_SID or AUTH_TOKEN is not defined');
 }
-
+if (!toNumber || !fromNumber) {
+    throw new Error('FROM_NUMBER or TO_NUMBER is not defined');
+}
 // Use APIKEY to access etherscan.io
 var url = 'https://api.etherscan.io/api?module=gastracker&action=gasoracle&apikey=' + apiKey
 
@@ -28,8 +33,8 @@ axios.get(url)
                 client.messages
                     .create({
                         body: 'Safe Gas Price is: ' + safeGasPrice,
-                        from: '+12398808970',
-                        to: '+15715946171‬'
+                        from: fromNumber,
+                        to: toNumber
                     })
                     .then(message => console.log(message.dateCreated + ', ' + message.body + ', ' + message.sid));
             }
